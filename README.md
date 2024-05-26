@@ -1,3 +1,5 @@
+trigger CI/CD - 1
+
 # Mega School 1 App
 
 [![](../../workflows/gh-pages/badge.svg)](../../actions)
