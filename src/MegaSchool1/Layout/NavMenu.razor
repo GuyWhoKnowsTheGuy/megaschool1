@@ -1,12 +1,8 @@
 ﻿@using MegaSchool1.Model
 @using MegaSchool1.Components
 @inherits Components.ComponentBase
-@inject IDialogService Dialog
 @inject NavigationManager NavigationManager
 @inject HttpClient Http
-@inject Constants Constants
-@inject UISettings UI
-@inject Repository.Repository Repo
 
 <MudNavMenu>
     <MudNavLink Href="@PageFullPath(string.Empty)" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
@@ -63,39 +59,15 @@
             return;
         }
         
-        _updateAvailable = await Util.UpdateAvailableAsync(Http);
-    }
-    
-    private async Task OnVersionClick(MouseEventArgs e)
-    {
-        var updatePreviouslyAvailable = _updateAvailable;
-        _updateAvailable = await Util.UpdateAvailableAsync(Http);
-
-        if(_updateAvailable != updatePreviouslyAvailable)
-        {
-            MainLayout.Refresh();
-        }
+        //_updateAvailable = await Util.UpdateAvailableAsync(Http);
     }
 
     private string GetGitHubUrl()
     {
-        const string DefaultGitHubUrl = "https://github.com/MudBlazorGitHubPages/mudblazorgithubpages.github.io";
+        const string DefaultGitHubUrl = "https://megaschool1.github.io/mwr/";
 
-        var baseUrl = new Uri(NavigationManager.BaseUri);
+        var baseUri = new Uri(NavigationManager.BaseUri);
 
-        if (baseUrl.Scheme == "https")
-        {
-            if (baseUrl.Host.EndsWith(".github.io"))
-            {
-
-                var organizationName = baseUrl.Host.Replace(".github.io", string.Empty);
-                var path = baseUrl.AbsolutePath.Replace("/", string.Empty);
-                var repositoryName = path != string.Empty ? path : $"{organizationName}.github.io";
-                    
-                return $"https://github.com/{organizationName}/{repositoryName}";
-            }
-        }
-
-        return DefaultGitHubUrl;
+        return baseUri.AbsoluteUri.Contains("localhost") ? DefaultGitHubUrl : baseUri.AbsoluteUri;
     }
 }
