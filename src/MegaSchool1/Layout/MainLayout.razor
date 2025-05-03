@@ -45,6 +45,76 @@
         </main>
     </div>
 }
+else if (true)
+{
+    <div class="page mud-layout" style="background-color:rgb(22,19,44);">
+
+        <main>
+            <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-2 pt-2">
+                @Body
+            </MudContainer>
+        </main>
+    </div>
+}
+else if (false)
+{
+       <div class="page mud-layout">
+
+        <main>
+            <div class="top-row px-4" style="background-color:@(Colors.Green.Default);">
+                <MudStack Row="true" Style="width:100%;">
+                    <Loader Loaded="_componentInitialized" Height="Pixel.From(50)" Width="Percentage.From(100)" SkeletonType="SkeletonType.Text">
+                        @if (ProspectMode)
+                        {
+                            <MudButton OnClick="ShowUsernameEditDialog" EndIcon="@Icons.Material.Filled.Edit" Variant="Variant.Filled" Color="Color.Primary">Set Member ID</MudButton>
+                        }
+                        else
+                        {
+                            if (_appState.AppIsInstallable)
+                            {
+                                <MudButton OnClick="OnInstallClick" EndIcon="@Icons.Material.Filled.AddToHomeScreen" Variant="Variant.Filled" Color="Color.Primary">Install</MudButton>
+                                <MudIconButton OnClick="@(() => _showInstallInstructions = true)" Icon="@Icons.Material.Filled.OndemandVideo" aria-label="video" Variant="Variant.Filled" Color="Color.Primary" />
+                            }
+                            else
+                            {
+                                <MudStack Row="true">
+                                    <MudText Style="color:white;">Hello @(_appState.User.Name) <MudIconButton OnClick="ShowUsernameEditDialog" Icon="@Icons.Material.Filled.Edit" /></MudText>
+                                </MudStack>
+                            }
+                        }
+                     </Loader>
+                    <MudSpacer/>
+                    <MudText Style="color:white;">@GetTitle()</MudText>
+                </MudStack>
+            </div>
+
+            <MudContainer MaxWidth="MaxWidth.ExtraExtraLarge" Class="my-2 pt-2">
+                <CascadingValue Value="_appState">
+                    @Body
+                    <MudHidden Breakpoint="Breakpoint.MdAndUp">
+                        <MudFab Style="position:fixed; bottom:0; left:0; padding-left:5;"
+                                Color="Color.Primary"
+                                StartIcon="@Icons.Material.Filled.Share"
+                                OnClick="@(async e => await ComponentBase.ShareOrCopyTextAsync(NavigationManager.Uri, Image.AppLogo, JSRuntime))"
+                                Size="Size.Small"  />
+                    </MudHidden>
+
+                    @if (_showAppUpdatePrompt)
+                    {
+                        <MudFab Style="position:fixed; bottom:0; right:0; padding-right:5;"
+                                Color="Color.Primary"
+                                EndIcon="@Icons.Material.Filled.Refresh"
+                                OnClick="@(e => NavigationManager.NavigateTo(Util.MakeUrlBypassBrowserCache(NavigationManager.BaseUri), true))"
+                                Label="Load Update" />
+                    }
+                    <MudScrollToTop>
+                        <MudFab Color="Color.Primary" StartIcon="@Icons.Material.Filled.ArrowCircleUp" />
+                    </MudScrollToTop>
+                </CascadingValue>
+            </MudContainer>
+        </main>
+    </div>
+}
 else
 {
     <div class="page mud-layout">
