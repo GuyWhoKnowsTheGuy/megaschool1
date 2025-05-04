@@ -17,7 +17,7 @@
     <MudText Align="Align.Center" Typo="Typo.h6">Mega School Classes</MudText>
     <MudText Align="Align.Center">First class is FREE! <br /> Additional classes are $150 per class.*</MudText>
     <br />
-    @foreach (var classInfo in _classes.Take(1))
+    @foreach (var classInfo in _classes)
     {
         <MudCard Outlined="true">
             <MudCardHeader>@((MarkupString)classInfo.ClassName)</MudCardHeader>
