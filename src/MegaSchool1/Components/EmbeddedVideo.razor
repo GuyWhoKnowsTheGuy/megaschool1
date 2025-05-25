@@ -1,6 +1,9 @@
-﻿@using MegaSchool1.Model
+﻿@using Foundation.Model
+@using MegaSchool1.Model
 @using OneOf
 @using OneOf.Types
+@using Foundation.UI.Components
+@using Microsoft.AspNetCore.Http
 @inherits Components.ComponentBase
 
 <div style="display:@_display;">
@@ -8,11 +11,12 @@
         video => video.Match<RenderFragment>(
             youTube => YouTubeView(youTube, video.Start),
             tikTok => TikTokView(tikTok),
-            vimeo => VimeoView(vimeo),
+            vimeo => VimeoView(vimeo, video.Start),
             facebook => FacebookView(facebook),
             startMeeting => StartMeetingView(startMeeting),
             html5 => Html5View(html5),
-            wistia => WistiaView(wistia)),
+            wistia => WistiaView(wistia),
+            rumble => RumbleView(rumble)),
         none => null))
 </div>
 
@@ -29,8 +33,22 @@
 
     private RenderFragment YouTubeView(YouTube youTube, OneOf<TimeSpan, None> videoStart) => __builder =>
     {
+        var videoParameters = new QueryString();
+
+        // clip
+        if (youTube.Clip.TryPickT0(out var clip, out _))
+        {
+            videoParameters = videoParameters.Add("clip", clip.Id).Add("clipt", clip.Timestamp);
+        }
+        
+        // start time
+        if (videoStart.TryPickT0(out var start, out _))
+        {
+            videoParameters = videoParameters.Add("start", ((int)start.TotalSeconds).ToString());
+        }
+        
         <iframe @onload="OnVideoLoaded"
-                src="@($"{Constants.YouTubeEmbedLinkPrefix}{youTube.VideoId}{videoStart.Match(s => $"?start={s.TotalSeconds}", none => string.Empty)}")"
+                src="@($"{Constants.YouTubeEmbedLinkPrefix}{youTube.VideoId}{videoParameters.ToString()}")"
                 width="560"
                 height="315"
                 title="YouTube video player"
@@ -47,9 +65,9 @@
         <script async src="https://www.tiktok.com/embed.js"></script>
     };
 
-    private RenderFragment VimeoView(Vimeo vimeo) => __builder =>
+    private RenderFragment VimeoView(Vimeo vimeo, OneOf<TimeSpan, None> start) => __builder =>
     {
-        <iframe src="@($"https://player.vimeo.com/video/{vimeo.VideoId}{vimeo.Hash.Match(hash => $"?h={hash}", none => string.Empty)}")" frameborder="0" allow="autoplay; fullscreen; picture-in-picture" allowfullscreen="" data-ready="true"></iframe>
+        <VimeoVideo Video="vimeo" Start="start"/>
     };
 
     private RenderFragment FacebookView(Facebook facebook) => __builder =>
@@ -79,6 +97,11 @@
         <script charset="ISO-8859-1" src="//fast.wistia.com/assets/external/E-v1.js"></script>
     };
 
+    private RenderFragment RumbleView(Rumble rumble) => __builder =>
+    {
+      <iframe src="https://rumble.com/embed/@rumble.VideoId/?pub=4"></iframe>
+    };
+    
     protected override void OnParametersSet()
     {
         if (Video.IsT0)

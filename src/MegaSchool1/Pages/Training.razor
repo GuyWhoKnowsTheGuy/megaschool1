@@ -1,11 +1,47 @@
 ﻿@page "/training"
-@inherits Components.ComponentBase
+@inherits PageBase
 @using MegaSchool1.Components
 @using MegaSchool1.Model
 @inject NavigationManager NavigationManager
 @inject UISettings UI
 
 <MudStack Spacing="3">
+    <Collapsable Title="Fundable360">
+        <MudStack Spacing="3">
+            <Fundable360CapturePageShareable/>
+            <ShareableVideo Content="Content.Fundable360" />
+            <ShareableVideo Content="Content.Fundable360Training" />
+            <MudCard Outlined="true">
+                <MudCardHeader>Fundable360 Consultation Prerequisites</MudCardHeader>
+                <MudCardContent>
+                    <MudText Align="Align.Left">1) You must have an EIN.  Obtain for free through MWR Tax Hotline.</MudText>
+                    <MudText Align="Align.Left">2) Have a Business Bank account.</MudText>
+                    <MudText Align="Align.Left">3) $2,995 (great to have but not needed at this time)</MudText>
+                    <MudText Align="Align.Left">4) Business web page other than MWR</MudText>
+                    <MudText Align="Align.Left">5) Business Email</MudText>
+                    <MudText Align="Align.Left">6) Business phone number</MudText>
+                </MudCardContent>
+            </MudCard>
+        </MudStack>
+    </Collapsable>
+    <Collapsable Title="Precious Metals">
+        <MudCard Outlined="true">
+            <MudCardHeader>J.Streicher Global</MudCardHeader>
+            <MudCardContent>
+                <MudStack Spacing="3">
+                    @{
+                        const string jstreicherUrl = "https://www.jstreicherglobal.com/our-history";
+                    }
+                    <ExternalLink Href="@jstreicherUrl">J.Streicher Global</ExternalLink>
+                    <Centered>
+                        <CopyContent TextToCopy="@jstreicherUrl"/>
+                    </Centered>
+                    <MudText Align="Align.Center">J.Striecher Global is one of the Top Asset Management Companies in the world with a 115 year track record. This company withstood the depression and was one of the original founders of the New York Stock Exchange. This is who currently handles our Precious Metals Leasing Agreements with over $1 Billion in leasing Agreements already secured.</MudText>
+                </MudStack>
+            </MudCardContent>
+            <MudText Align="Align.Center"></MudText>
+        </MudCard>
+    </Collapsable>
     <MembershipTrainings/>
     <Collapsable Title="GivBux">
         <MudStack Spacing="3">
@@ -123,7 +159,7 @@
             <MudCard Outlined="true">
                 <MudCardHeader>Collecting the Decision</MudCardHeader>
                 <MudCardContent>
-                    <EmbeddedVideo Video="@(new Video(new Facebook("ExtraDigit", "436886989067883")))" />
+                    <EmbeddedVideo Video="@(new Video(new Facebook("ExtraDigit", "436886989067883")))"/>
                 </MudCardContent>
             </MudCard>
         </MudStack>

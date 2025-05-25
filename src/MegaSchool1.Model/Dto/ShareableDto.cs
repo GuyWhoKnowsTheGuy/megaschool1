@@ -46,8 +46,13 @@ public class ShareableDto
     public bool ShowHeaderImage { get; set; } = true;
 
     [JsonPropertyName("capturePageImageId")]
+    [ConfigurationKeyName("capturePageImageId")]
     public Image? CapturePageImage { get; set; }
 
+    [JsonPropertyName("capturePageImageUrl")]
+    [ConfigurationKeyName("capturePageImageUrl")]
+    public string? CapturePageImageUrl { get; set; }
+    
     [JsonPropertyName("downloadText")]
     public string? DownloadText { get; set; }
 
@@ -101,6 +106,14 @@ public class ShareableDto
     [JsonPropertyName("hideCapturePageVideo")]
     [ConfigurationKeyName("hideCapturePageVideo")]
     public bool HideCapturePageVideo { get;  set; }
+    
+    [JsonPropertyName("clipId")]
+    [ConfigurationKeyName("clipId")]
+    public string? ClipId { get; set; }
+    
+    [JsonPropertyName("clipTimestamp")]
+    [ConfigurationKeyName("clipTimestamp")]
+    public string? ClipTimestamp { get; set; }
     
     public override string ToString() => $"{ContentId}";
 }
