@@ -1,13 +1,17 @@
-﻿using MegaSchool1.Model.UI;
+﻿using System.Globalization;
+using MegaSchool1.Model.UI;
 using Microsoft.AspNetCore.Components;
 using OneOf.Types;
 using OneOf;
 using System.Web;
+using Foundation.Model;
+using Microsoft.AspNetCore.Http;
 
 namespace MegaSchool1.Model;
 
 public enum Highlight
 {
+    None,
     MoneyChallenge,
     ReduceMyTaxes,
     EliminateMyDebt,
@@ -50,6 +54,8 @@ public enum Image
     AppLogo = 19,
     MWRGivBuxLogo = 20,
     Bitcoin = 21,
+    Fundable360Logo = 22,
+    Fundable360LogoExtended = 23,
 }
 
 public enum Strategy
@@ -72,6 +78,7 @@ public enum VideoPlatform
     StartMeeting = 5,
     Html5 = 6,
     Wistia = 7,
+    Rumble = 8,
 }
 
 public enum Content
@@ -155,6 +162,19 @@ public enum Content
     JoinMWR = 76,
     DebtDemo = 77,
     CollegeFund = 78,
+    BusinessFunding = 79,
+    BusinessFundingPique = 80,
+    Fundable360 = 81,
+    CollegeFundingPique = 82,
+    Fundable360Explainer = 83,
+    Fundable360Training = 84,
+    Taxed5Percent = 85,
+    Fundable360Pique = 86,
+    RealEstateProsExt = 87,
+    Podcast1 = 88,
+    MoneyChallenge2 = 89,
+    InstantPayRaise = 90,
+    LowerMyBills = 91,
 }
 
 public enum Language
@@ -196,13 +216,8 @@ public enum ProspectVersion
     v1_0_0_0 = 0,
 }
 
-public record YouTube(string VideoId);
+public record YouTube(string VideoId, OneOf<(string Id, string Timestamp), None> Clip);
 public record TikTok(string UserHandle, string VideoId);
-
-/// <summary>
-///     Hash - Required for private Vimeo videos. See https://www.drupal.org/project/video_embed_field/issues/3238136
-/// </summary>
-public record Vimeo(string VideoId, OneOf<string, None> Hash);
 
 public record Facebook(string ChannelId, string VideoId);
 
@@ -212,8 +227,10 @@ public record Html5(Uri Uri);
 
 public record Wistia(string VideoId);
 
+public record Rumble(string VideoId);
+
 [GenerateOneOf]
-public partial class Video : OneOfBase<YouTube, TikTok, Vimeo, Facebook, StartMeeting, Html5, Wistia>
+public partial class Video : OneOfBase<YouTube, TikTok, Vimeo, Facebook, StartMeeting, Html5, Wistia, Rumble>
 {
     public OneOf<TimeSpan, None> Start { get; set; }
 }
@@ -244,21 +261,62 @@ public class Constants(UISettings ui, NavigationManager navigationManager)
     public static string MarketingDirectorUrlSpanish(string username) => $"https://www.makewealthreal.com/es/?member={username}";
     public static string JoinMakeWealthReal(string username, Language language) => $"https://www.makewealthreal.com{(language == Language.Spanish ? "/es" : string.Empty)}/get-started/?member={username}";
 
-    public static string MinimalistYouTubeLink(string youTubeId, OneOf<TimeSpan, None> videoStart) => $"{MinimalistVideoLinkPrefix}?y={youTubeId}{videoStart.Match(s => $"&s={s.TotalSeconds}", none => string.Empty)}";
-    public static string MinimalistVimeoLink(string vimeoId, string? hash) => $"{MinimalistVideoLinkPrefix}?v={vimeoId}{(string.IsNullOrWhiteSpace(hash) ? string.Empty : $"&h={hash}")}";
+    public static string MinimalistYouTubeLink(string youTubeId, OneOf<(string Id, string Timestamp), None> clipInfo, OneOf<TimeSpan, None> videoStart)
+    {
+        var videoParameters = QueryString.Create("y", youTubeId);
+        
+        // clip
+        if (clipInfo.TryPickT0(out var clip, out _))
+        {
+            videoParameters = videoParameters.Add("clip", clip.Id).Add("clipt", clip.Timestamp);
+        }
+        
+        // start time
+        if (videoStart.TryPickT0(out var start, out _))
+        {
+            videoParameters = videoParameters.Add("s", ((int)start.TotalSeconds).ToString());
+        }
+        
+        return $"{MinimalistVideoLinkPrefix}{videoParameters.ToString()}";
+    }
+
+    public static string MinimalistVimeoLink(string vimeoId, OneOf<string, None> hash, OneOf<TimeSpan, None> start)
+    {
+        var uriBuilder = new UriBuilder($"{MinimalistVideoLinkPrefix}?v={vimeoId}");
+        var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+        
+        // hash
+        if (hash.TryPickT0(out var h, out _))
+        {
+            query["h"] = h;
+        }
+        
+        // start time
+        if (start.TryPickT0(out var s, out _))
+        {
+            query["s"] = s.TotalSeconds.ToString();
+        }
+        
+        uriBuilder.Query = query.ToString();
+        
+        return uriBuilder.ToString().Replace(":443", string.Empty);
+    }
+        
     public static string MinimalistTikTokLink(string tikTokHandle, string videoId) => $"{MinimalistVideoLinkPrefix}?th={tikTokHandle}&t={videoId}";
-    public static string EmbeddableYouTubeLink(string youTubeId) => $"{YouTubeEmbedLinkPrefix}{youTubeId}";
-    public static string EmbeddableVimeoLink(string vimeoId) => $"{VimeoEmbedLinkPrefix}{vimeoId}";
+    public static string Fundable360CapturePage(string agentId) => $"https://www.makewealthreal.com/fundable360/?member={agentId}";
 
     public static string MinimalistVideoLink(Video video) => video.Match(
-        youTube => MinimalistYouTubeLink(youTube.VideoId, video.Start),
+        youTube => MinimalistYouTubeLink(youTube.VideoId, youTube.Clip, video.Start),
         tikTok => MinimalistTikTokLink(tikTok.UserHandle, tikTok.VideoId),
-        vimeo => MinimalistVimeoLink(vimeo.VideoId, vimeo.Hash.Match<string?>(h => h, none => null)),
+        vimeo => MinimalistVimeoLink(vimeo.VideoId, vimeo.Hash, video.Start),
         facebook => $"https://www.facebook.com/watch/live/?ref=watch_permalink&v={facebook.VideoId}",
         startMeeting => $"https://stme.in/{startMeeting.VideoId}",
         html5 => html5.Uri.AbsoluteUri,
-        wistia => $"{MinimalistVideoLinkPrefix}?w={wistia.VideoId}");
+        wistia => $"{MinimalistVideoLinkPrefix}?w={wistia.VideoId}",
+        rumble => $"https://rumble.com/embed/{rumble.VideoId}/?pub=4");
 
+    public static string GetImageUriOrDefault(Image image) => GetImageUri(image).Match(found => found, none => GetImageUrl(Image.MWRLogoTransparent));
+    
     public static OneOf<string, None> GetImageUri(Image image)
     {
         try
@@ -277,14 +335,14 @@ public class Constants(UISettings ui, NavigationManager navigationManager)
         Image.HealthShare => "/images/mwr-healthshare.png",
         Image.MembershipLogo => "/images/mwr-membership-logo.jpg?v=2",
         Image.MoneyChallengeLogo => "/images/72hour-money-challenge-logo.png",
-        Image.AppScreenshot => "images/app-screenshot.jpeg",
-        Image.Overview1On1English => "images/72-HourMoneyChallengeOverview_1on1_ENG.png",
-        Image.RevenueShare1On1English => "images/72-HourMoneyChallengeRevenueSharing-1on1-ENG.png",
-        Image.Overview1On1Spanish => "images/72-HourMoneyChallengeOverview_1on1_SPANISH.png",
-        Image.RevenueShare1On1Spanish => "images/72-HourMoneyChallengeRevenueSharing-1on1-SPANISH.png",
-        Image.PreciousMetals => "images/mwr-precious-metals.jpg",
-        Image.FaithAndFinance => "images/faithandfinance.jpg",
-        Image.NextLevelStrategies => "images/next-level-strategies-logo.png",
+        Image.AppScreenshot => "/images/app-screenshot.jpeg",
+        Image.Overview1On1English => "/images/72-HourMoneyChallengeOverview_1on1_ENG.png",
+        Image.RevenueShare1On1English => "/images/72-HourMoneyChallengeRevenueSharing-1on1-ENG.png",
+        Image.Overview1On1Spanish => "/images/72-HourMoneyChallengeOverview_1on1_SPANISH.png",
+        Image.RevenueShare1On1Spanish => "/images/72-HourMoneyChallengeRevenueSharing-1on1-SPANISH.png",
+        Image.PreciousMetals => "/images/mwr-precious-metals.jpg",
+        Image.FaithAndFinance => "/images/faithandfinance.jpg",
+        Image.NextLevelStrategies => "/images/next-level-strategies-logo.png",
         Image.StudentLoanDebtReliefTile => "/images/student-loan-debt-relief-tile.png",
         Image.KeysToHomeOwnership => "/images/keys-to-home-ownership-banner.jpg",
         Image.WealthWorksheet => "https://static.wixstatic.com/media/5f35ec_f9531ebb4a2d451cac0d6dd5b588c474~mv2.png",
@@ -293,7 +351,9 @@ public class Constants(UISettings ui, NavigationManager navigationManager)
         Image.GivBux => "/images/givbux.jpeg",
         Image.AppLogo => "/images/app-logo.png",
         Image.MWRGivBuxLogo => "/images/mwr-givbux-logo.png",
-        Image.Bitcoin => "images/bitcoin.png",
+        Image.Bitcoin => "/images/bitcoin.png",
+        Image.Fundable360Logo => "https://static.wixstatic.com/media/5f35ec_a147b37684694e2caa99fa301539a6ad~mv2.jpeg",
+        Image.Fundable360LogoExtended => "https://static.wixstatic.com/media/5f35ec_7b5683f431f14509a63432b25ef8c1a1~mv2.jpeg",
         _ => throw new Exception($"Image not found: {image}"),
     };
 
