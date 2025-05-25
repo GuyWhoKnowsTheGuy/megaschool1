@@ -4,20 +4,24 @@
 @using MegaSchool1.Model.Repository
 @using Content = MegaSchool1.Model.Content
 @using Shareable = MegaSchool1.Components.Shareable
-@inherits Components.ComponentBase
+@inherits PageBase
 @inject UISettings UI
 
 <MudStack Spacing="3">
     <MudCard>
         <MudCardContent>
             <MudStack Spacing="6">
-                <MudSelect T="Content" Label="@($"Select Your Shareable {Constants.JeromePointingDownEmoji}")" @bind-Value="_selectedShareable" ToStringFunc="@(content => ShareableTitle(content))" Variant="Variant.Outlined" Style="width:300px;">
+                <MudSelect T="Content" Label="@($"Tap Here! {Constants.JeromePointingDownEmoji}")" @bind-Value="_selectedShareable" ToStringFunc="@(content => ShareableTitle(content))" Variant="Variant.Outlined" Style="width:300px;">
                     @foreach (var content in GetSelectedContent([_selectedCategory]))
                     {
                         <MudSelectItem Value="@content" />
                     }
                 </MudSelect>
                 <ShareableVideo Content="_selectedShareable"/>
+                @if(Fundable360Shareables.Contains(_selectedShareable))
+                {
+                    <Fundable360CapturePageShareable/>
+                }
                 <Centered>
                     <MudChipSet T="Category" SelectedValue="_selectedCategory" SelectedValueChanged="SelectedCategoryChanged" SelectedValues="_selectedCategories" SelectedValuesChanged="SelectedCategoriesChanged" SelectionMode="SelectionMode.SingleSelection" CheckMark="true">
                         @foreach(var filterableValue in Categories)
@@ -46,7 +50,7 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <MudStack Spacing="3">
-                        <MudSelect T="Content" Label="@($"Select Your Shareable {Constants.JeromePointingDownEmoji}")" @bind-Value="_selectedInCompleteVideoLibrary" ToStringFunc="@(content => ShareableTitle(content))" Variant="Variant.Outlined" Style="width:300px;">
+                        <MudSelect T="Content" Label="@("Tap Here! {Constants.JeromePointingDownEmoji}")" @bind-Value="_selectedInCompleteVideoLibrary" ToStringFunc="@(content => ShareableTitle(content))" Variant="Variant.Outlined" Style="width:300px;">
                             @foreach (var content in Constants.OrderedContent.Where(c => UI.EnglishLocale[c] is { Platform: not VideoPlatform.None, ContentId: not Content.Custom }).OrderBy(c => ShareableTitle(c)))
                             {
                                 <MudSelectItem Value="@content" />
@@ -122,7 +126,7 @@
                 </MudCardHeader>
                 <MudCardContent>
                     <MudStack Spacing="3">
-                        <MudSelect T="Content" Label="@($"Select a Video Shareable {Constants.JeromePointingDownEmoji}")" @bind-Value="_videoShareableContent" ToStringFunc="@(content => ShareableTitle(content))" Variant="Variant.Outlined" Style="width:300px;">
+                        <MudSelect T="Content" Label="@($"Tap Here! {Constants.JeromePointingDownEmoji}")" @bind-Value="_videoShareableContent" ToStringFunc="@(content => ShareableTitle(content))" Variant="Variant.Outlined" Style="width:300px;">
                             @foreach (var content in Constants.OrderedContent.Where(c => UI.EnglishLocale[c] is { Platform: not VideoPlatform.None, ContentId: not Content.Custom }).OrderBy(c => ShareableTitle(c)))
                             {
                                 <MudSelectItem Value="@content" />
@@ -134,7 +138,7 @@
             </MudCard>
             <Loader Loaded="@(_capturePage.TeamMember != null)">
                 <TeamMemberPicker Description="Capture Page For:" @bind-SelectedTeamMember="_capturePage.TeamMember">
-                    <MudSelect T="Content" Label="@($"Select a Capture Page {Constants.JeromePointingDownEmoji}")" @bind-Value="_capturePage.Content" ToStringFunc="@(content => (UI.EnglishLocale[content]?.AppTitle ?? content.ToString()).Replace("<br/>", " "))" Variant="Variant.Outlined" Style="width:300px;">
+                    <MudSelect T="Content" Label="@($"Tap Here! {Constants.JeromePointingDownEmoji}")" @bind-Value="_capturePage.Content" ToStringFunc="@(content => (UI.EnglishLocale[content]?.AppTitle ?? content.ToString()).Replace("<br/>", " "))" Variant="Variant.Outlined" Style="width:300px;">
                         @foreach (var content in Constants.OrderedContent.Where(c => UI.EnglishLocale[c] is { Platform: not VideoPlatform.None, ContentId: not Content.Custom }))
                         {
                             <MudSelectItem Value="@content" />
@@ -164,16 +168,17 @@
             <Loader Loaded="@(_selectedTeamMemberWebsite != null)">
                 <TeamMemberPicker Description="Shareable For:" @bind-SelectedTeamMember="_selectedTeamMemberWebsite">
                     <ShareableMultilingual Description="My Website"
-                                               
-                                                EnglishTextToCopy="@Constants.MarketingDirectorUrlEnglish(_selectedTeamMemberWebsite!.MemberId)"
-                                                EnglishTooltip="English shareable copied!"
-                                                EnglishImageUrl="@Constants.GetImageUrl(Image.MWRGivBuxLogo)"
+                                           Url="@Constants.MarketingDirectorUrlEnglish(_selectedTeamMemberWebsite!.MemberId)"
+                                           EnglishTextToCopy="@Constants.MarketingDirectorUrlEnglish(_selectedTeamMemberWebsite!.MemberId)"
+                                           EnglishTooltip="English shareable copied!"
+                                           EnglishImageUrl="@Constants.GetImageUrl(Image.MWRGivBuxLogo)"
                         
-                                                SpanishTextToCopy="@Constants.MarketingDirectorUrlSpanish(_selectedTeamMemberWebsite!.MemberId)"
-                                                SpanishTooltip="Español shareable copied!"
-                                                SpanishImageUrl="@Constants.GetImageUrl(Image.MWRGivBuxLogo)" />
+                                           SpanishTextToCopy="@Constants.MarketingDirectorUrlSpanish(_selectedTeamMemberWebsite!.MemberId)"
+                                           SpanishTooltip="Español shareable copied!"
+                                           SpanishImageUrl="@Constants.GetImageUrl(Image.MWRGivBuxLogo)" />
                 </TeamMemberPicker>
             </Loader>
+            <Fundable360CapturePageShareable/>
             <CardShareableMulti Description="Extra Digit Wealth Worksheet" Url="https://5f35ec78-8acd-4f4f-9b98-5439adb647ec.usrfiles.com/ugd/5f35ec_811dce03aa9c440fbf22bcb2c3d3a602.pdf">
                 <Top>
                     <ShareableContent Title="For Prospects" Tooltip="Copied Shareable" ImageUrl="@Constants.GetImageUrl(Image.MWRGivBuxLogo)" TextToCopy="@($"Wealth Worksheet{Environment.NewLine}{Environment.NewLine}Print out before our meeting!{Environment.NewLine}{Constants.PointingDownEmoji}{Environment.NewLine}https://5f35ec78-8acd-4f4f-9b98-5439adb647ec.usrfiles.com/ugd/5f35ec_811dce03aa9c440fbf22bcb2c3d3a602.pdf")" />
@@ -297,7 +302,12 @@
 
     private readonly (Content Content, Category[] Categories)[] ContentCategories = 
     [
+        (Content.Fundable360, [Category.Services]),
+        (Content.Fundable360Explainer, [Category.Services]),
+
         (Content.MWRPique, [Category.Corporate]),
+        (Content.Fundable360Pique, [Category.Corporate]),
+        (Content.BusinessFundingPique, [Category.Corporate]),
         (Content.MembershipPique, [Category.Corporate, Category.Services]),
         (Content.Membership, [Category.Corporate, Category.Services]),
         (Content.MindsetPique, [Category.Corporate]),
@@ -314,10 +324,12 @@
         (Content.CorporateBusinessOverview, [Category.Corporate, Category.BusinessOverview]),
         (Content.NextLevelStrategies, [Category.Corporate]),
         
-        (Content.CollegeFund, [Category.MegaSchool, Category.BusinessOverview]),
+        (Content.CollegeFundingPique, [Category.MegaSchool]),
         (Content.BizOwnerPique, [Category.MegaSchool]),
         (Content.BitcoinPreview, [Category.MegaSchool]),
         (Content.PrisonMinistry, [Category.MegaSchool]),
+        (Content.Taxed5Percent, [Category.MegaSchool]),
+        (Content.CollegeFund, [Category.MegaSchool, Category.BusinessOverview]),
         
         (Content.EDMPique, [Category.ExtraDigitMovement, Category.BusinessOverview]),
         (Content.BusinessOwnerPique, [Category.ExtraDigitMovement]),
@@ -329,11 +341,13 @@
         (Content.FaithAndFinanceOverview, [Category.FaithAndFinance, Category.BusinessOverview]),
         
         (Content.RealEstatePros, [Category.RealEstate]),
+        (Content.RealEstateProsExt, [Category.RealEstate]),
 
         (Content.HBBTaxBenefits, [Category.Ark]),
 
         (Content.EliminateMyDebtExplainer, [Category.Services]),
-        (Content.ReduceMyTaxesExplainer, [Category.Services]),
+        (Content.InstantPayRaise, [Category.Services]),
+        (Content.LowerMyBills, [Category.Services]),
         (Content.HealthShare, [Category.Services]),
         (Content.CreditRestoration, [Category.Services, Category.RealEstate]),
         (Content.StudentLoanDebtRelief, [Category.Services]),
@@ -362,17 +376,20 @@
         (Content.GivBuxUberDemo, [Category.GivBux]),
 
         (Content.MegaSchoolAppInstall, [Category.Training]),
+        (Content.Fundable360Training, [Category.Training]),
         (Content.DebtDemo, [Category.Training]),
         (Content.MembershipOrientation, [Category.Training]),
         (Content.FastStart, [Category.Training]),
     ];
+
+    private readonly Content[] Fundable360Shareables = [Content.Fundable360, Content.Fundable360Explainer, Content.BusinessFundingPique, Content.CollegeFundingPique, Content.CollegeFund];
     
     private Content _videoShareableContent = Content.MoneyChallenge;
     private TeamMember? _selectedTeamMemberMarketingDirector;
     private TeamMember? _selectedTeamMemberWebsite;
     private Content _selectedShareable = Content.MWRPique;
     private Content _selectedInCompleteVideoLibrary = Content.MoneyChallenge;
-
+    
     private IEnumerable<Content> GetSelectedContent(Category[] selectedCategories)
     {
         return ContentCategories
@@ -415,7 +432,7 @@
     {
         <ShareableVideo Content="content"/>
     };
-
+    
     private class ShareableViewModel
     {
         public Content Content { get; set; }

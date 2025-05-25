@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
+<Project Sdk="Microsoft.NET.Sdk.BlazorWebAssembly">
 
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
@@ -8,8 +8,40 @@
 	<AssemblyVersion>1.0.0.0</AssemblyVersion>
     <BlazorWasmPrerenderingDeleteLoadingContents>true</BlazorWasmPrerenderingDeleteLoadingContents>
 	<BlazorWasmPrerenderingMode>WebAssemblyPrerendered</BlazorWasmPrerenderingMode>
-    <BlazorWasmPrerenderingUrlPathToExplicitFetch>/prisonministry;/en/CollegeFund/MS1/megaschool/0;/en/GivBuxAccountSetup/MS1/megaschool/0;/en/JoinMWR/MS1/TIP/0;/en/JoinMWR/MS1/megaschool/0;/en/WealthWorksheet/MS1/megaschool;/en/RealEstatePros/MS1/GuyWhoKnowsTheGuy;/en/GivBux/MS1/megaschool/0</BlazorWasmPrerenderingUrlPathToExplicitFetch>
-	<GHPages>true</GHPages>
+    <BlazorWasmPrerenderingUrlPathToExplicitFetch>
+      /shareables;/prisonministry;/test;/ptest;
+
+      /en/CollegeFund/MS1/megaschool/0;
+      /en/CollegeFundingPique/MS1/SCHOLARSHIP/0;
+      /en/CollegeFundingPique/MS1/megaschool/0;
+      
+      /en/Fundable360Explainer/MS1/megaschool/0;
+      /en/BusinessFundingPique/MS1/megaschool/0;
+      /en/Fundable360/MS1/megaschool/0;
+      
+      /en/GivBux/MS1/megaschool/0;
+      /en/GivBuxAccountSetup/MS1/megaschool/0;
+      
+      /en/JoinMWR/MS1/TIP/0;
+      /en/JoinMWR/MS1/megaschool/0;
+      
+      /en/WealthWorksheet/MS1/megaschool;
+      
+      /en/RealEstatePros/MS1/megaschool;
+      /en/RealEstatePros/MS1/GuyWhoKnowsTheGuy;
+
+      /en/RealEstateProsExt/MS1/KodakHussle/0;
+      /en/InstantPayRaise/MS1/KodakHussle/0;
+      /en/PayoffMortgage/MS1/KodakHussle/0;
+      /en/CreditRestoration/MS1/KodakHussle/0;
+      /en/HealthShare/MS1/KodakHussle/0;
+      /en/LowerMyBills/MS1/KodakHussle/0;
+      /en/MWRPique/MS1/KodakHussle/0;
+      /en/PRA/MS1/KodakHussle/0;
+      /en/PreciousMetals/MS1/KodakHussle/0;
+      /en/TrustMyAssets/MS1/KodakHussle/0;
+    </BlazorWasmPrerenderingUrlPathToExplicitFetch>
+    <GHPages>true</GHPages>
   </PropertyGroup>
 
 
@@ -21,12 +53,13 @@
     <PackageReference Include="Append.Blazor.WebShare" Version="7.0.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
     <PackageReference Include="BlazorWasmPreRendering.Build" Version="5.0.1" />
-    <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.3" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.3" PrivateAssets="all" />
-    <PackageReference Include="MudBlazor" Version="7.15.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
+    <PackageReference Include="MudBlazor" Version="8.3.0" />
     <PackageReference Include="OneOf" Version="3.0.271" />
     <PackageReference Include="OneOf.SourceGenerator" Version="3.0.271" />
     <PackageReference Include="PublishSPAforGitHubPages.Build" Version="3.0.0" />
