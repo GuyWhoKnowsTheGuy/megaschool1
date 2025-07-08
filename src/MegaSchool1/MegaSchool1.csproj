@@ -53,7 +53,7 @@
   <ItemGroup>
     <PackageReference Include="Append.Blazor.WebShare" Version="7.0.0" />
     <PackageReference Include="Blazored.LocalStorage" Version="4.5.0" />
-    <PackageReference Include="BlazorWasmPreRendering.Build" Version="5.0.1" />
+    <PackageReference Include="BlazorWasmPreRendering.Build" Version="6.0.0" />
     <PackageReference Include="FluentValidation" Version="12.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components" Version="9.0.6" />
     <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="9.0.6" />
@@ -61,10 +61,10 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.6" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
     <PackageReference Include="Microsoft.FeatureManagement" Version="4.2.0" />
-    <PackageReference Include="MudBlazor" Version="8.8.0" />
+    <PackageReference Include="MudBlazor" Version="8.9.0" />
     <PackageReference Include="OneOf" Version="3.0.271" />
     <PackageReference Include="OneOf.SourceGenerator" Version="3.0.271" />
-    <PackageReference Include="PublishSPAforGitHubPages.Build" Version="3.0.0" />
+    <PackageReference Include="PublishSPAforGitHubPages.Build" Version="3.0.1" />
     <PackageReference Include="QRCoder" Version="1.6.0" />
     <PackageReference Include="Riok.Mapperly" Version="4.2.1" />
     <PackageReference Include="Serilog" Version="4.3.0" />
