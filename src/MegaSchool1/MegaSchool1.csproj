@@ -59,7 +59,7 @@
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly" Version="9.0.8" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebAssembly.DevServer" Version="9.0.8" PrivateAssets="all" />
     <PackageReference Include="Microsoft.AspNetCore.Http.Abstractions" Version="2.3.0" />
-    <PackageReference Include="Microsoft.FeatureManagement" Version="4.2.1" />
+    <PackageReference Include="Microsoft.FeatureManagement" Version="4.3.0" />
     <PackageReference Include="MudBlazor" Version="8.11.0" />
     <PackageReference Include="OneOf" Version="3.0.271" />
     <PackageReference Include="OneOf.SourceGenerator" Version="3.0.271" />
@@ -80,6 +80,7 @@
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.ILLink.Tasks" Version="9.0.8" />
     <PackageReference Include="Microsoft.NET.Sdk.WebAssembly.Pack" Version="9.0.8" />
+  <PackageReference Include="stellar-dotnet-sdk" Version="14.0.0" />
     <ProjectReference Include="..\Flow.Model\Flow.Model.csproj" />
     <ProjectReference Include="..\Flow.UI\Flow.UI.csproj" />
     <ProjectReference Include="..\Foundation.UI\Foundation.UI.csproj" />
