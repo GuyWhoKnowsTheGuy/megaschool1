@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using MegaSchool1.Model.UI;
+﻿using MegaSchool1.Model.UI;
 using Microsoft.AspNetCore.Components;
 using OneOf.Types;
 using OneOf;
@@ -190,6 +189,7 @@ public enum Content
     Share360Explainer = 102,
     Ace = 103,
     BizToolkit = 104,
+    FinancialLiteracy = 105,
 }
 
 public enum Language
